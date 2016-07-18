@@ -21,49 +21,49 @@ package org.intermine.bio.dataloader.job;
  */
 public class FlowExecution implements Comparable<FlowExecution> {
 
-	private final String name;
-	private final FlowExecutionStatus status;
+    private final String name;
+    private final FlowExecutionStatus status;
 
-	/**
-	 * @param name
-	 * @param status
-	 */
-	public FlowExecution(String name, FlowExecutionStatus status) {
-		this.name = name;
-		this.status = status;
-	}
+    /**
+     * @param name
+     * @param status
+     */
+    public FlowExecution(String name, FlowExecutionStatus status) {
+        this.name = name;
+        this.status = status;
+    }
 
-	/**
-	 * @return the name of the end state reached
-	 */
-	public String getName() {
-		return name;
-	}
+    /**
+     * @return the name of the end state reached
+     */
+    public String getName() {
+        return name;
+    }
 
-	/**
-	 * @return the FlowExecutionStatus
-	 */
-	public FlowExecutionStatus getStatus() {
-		return status;
-	}
+    /**
+     * @return the FlowExecutionStatus
+     */
+    public FlowExecutionStatus getStatus() {
+        return status;
+    }
 
-	/**
-	 * Create an ordering on {@link FlowExecution} instances by comparing their
-	 * statuses.
-	 *
-	 * @see Comparable#compareTo(Object)
-	 *
-	 * @param other
-	 * @return negative, zero or positive as per the contract
-	 */
-	@Override
-	public int compareTo(FlowExecution other) {
-		return this.status.compareTo(other.getStatus());
-	}
+    /**
+     * Create an ordering on {@link FlowExecution} instances by comparing their
+     * statuses.
+     *
+     * @see Comparable#compareTo(Object)
+     *
+     * @param other
+     * @return negative, zero or positive as per the contract
+     */
+    @Override
+    public int compareTo(FlowExecution other) {
+        return this.status.compareTo(other.getStatus());
+    }
 
-	@Override
-	public String toString() {
-		return String.format("FlowExecution: name=%s, status=%s", name, status);
-	}
+    @Override
+    public String toString() {
+        return String.format("FlowExecution: name=%s, status=%s", name, status);
+    }
 
 }

@@ -16,29 +16,29 @@ import org.intermine.bio.postprocess.PostProcessOperationsTask;
 public class FileUtils {
 
     private static final Logger log = Logger.getLogger(FileUtils.class);
-    
-	public static String getSqlFileContents(String fileName) {
-		
-		
-	    StringBuffer sb = new StringBuffer();
-	    try {
-	    	ClassLoader cl = ClassLoader.getSystemClassLoader();
-	    	log.info("File Path: " + fileName);	    	
-	    	 ClassLoader classLoader =  FileUtils.class.getClassLoader();
+
+    public static String getSqlFileContents(String fileName) {
+
+
+        StringBuffer sb = new StringBuffer();
+        try {
+            ClassLoader cl = ClassLoader.getSystemClassLoader();
+            log.info("File Path: " + fileName);
+             ClassLoader classLoader =  FileUtils.class.getClassLoader();
              InputStream in =
                  classLoader.getResourceAsStream(fileName);
-	 //   	InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream(fileName);
-	        BufferedReader br = new BufferedReader(new InputStreamReader(in));
-	        String strLine;
-	        while ((strLine = br.readLine()) != null) {
-	            sb.append(" " + strLine);
-	        }
-	    } catch (FileNotFoundException e) {
-	        e.printStackTrace();
-	    } catch (IOException e) {
-	        e.printStackTrace();
-	    }
-	    return sb.toString();
-	}
-	
+     //   	InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream(fileName);
+            BufferedReader br = new BufferedReader(new InputStreamReader(in));
+            String strLine;
+            while ((strLine = br.readLine()) != null) {
+                sb.append(" " + strLine);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return sb.toString();
+    }
+
 }

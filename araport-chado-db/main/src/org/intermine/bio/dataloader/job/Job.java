@@ -20,32 +20,32 @@ package org.intermine.bio.dataloader.job;
  * representing the configuration of a job specified by a developer. It should
  * be noted that restart policy is applied to the job as a whole and not to a
  * step.
- * 
  *
- * 
+ *
+ *
  */
 public interface Job {
 
-	String getName();
+    String getName();
 
-	/**
-	 * Run the {@link JobExecution} and update the meta information like status
-	 * and statistics as necessary. This method should not throw any exceptions
-	 * for failed execution. Clients should be careful to inspect the
-	 * {@link JobExecution} status to determine success or failure.
-	 * 
-	 * @param execution a {@link JobExecution}
-	 */
-	void execute(JobExecution execution);
+    /**
+     * Run the {@link JobExecution} and update the meta information like status
+     * and statistics as necessary. This method should not throw any exceptions
+     * for failed execution. Clients should be careful to inspect the
+     * {@link JobExecution} status to determine success or failure.
+     *
+     * @param execution a {@link JobExecution}
+     */
+    void execute(JobExecution execution);
 
-	/**
-	 * If clients need to generate new parameters for the next execution in a
-	 * sequence they can use this incrementer. The return value may be null, in
-	 * the case that this job does not have a natural sequence.
-	 * 
-	 * @return in incrementer to be used for creating new parameters
-	 */
-	JobParametersIncrementer getJobParametersIncrementer();
+    /**
+     * If clients need to generate new parameters for the next execution in a
+     * sequence they can use this incrementer. The return value may be null, in
+     * the case that this job does not have a natural sequence.
+     *
+     * @return in incrementer to be used for creating new parameters
+     */
+    JobParametersIncrementer getJobParametersIncrementer();
 
-	
+
 }

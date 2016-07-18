@@ -24,111 +24,111 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * 
- *  
+ *
+ *
  */
 public abstract class StepBuilderHelper<B extends StepBuilderHelper<B>> {
 
-	protected final Log logger = LogFactory.getLog(getClass());
+    protected final Log logger = LogFactory.getLog(getClass());
 
-	protected final CommonStepProperties properties;
+    protected final CommonStepProperties properties;
 
-	public StepBuilderHelper(String name) {
-		this.properties = new CommonStepProperties();
-		properties.name = name;
-	}
+    public StepBuilderHelper(String name) {
+        this.properties = new CommonStepProperties();
+        properties.name = name;
+    }
 
-	/**
-	 * Create a new builder initialized with any properties in the parent. The parent is copied, so it can be re-used.
-	 * 
-	 * @param parent a parent helper containing common step properties
-	 */
-	protected StepBuilderHelper(StepBuilderHelper<?> parent) {
-		this.properties = new CommonStepProperties(parent.properties);
-	}
-
-	
-	public B startLimit(int startLimit) {
-		properties.startLimit = startLimit;
-		@SuppressWarnings("unchecked")
-		B result = (B) this;
-		return result;
-	}
-
-	/**
-	 * Registers objects using the annotation based listener configuration.
-	 *
-	 * @param listener the object that has a method configured with listener annotation
-	 * @return this for fluent chaining
-	 */
-	public B listener(Object listener) {
-		Set<Method> stepExecutionListenerMethods = new HashSet<Method>();
-			
-
-		@SuppressWarnings("unchecked")
-		B result = (B) this;
-		return result;
-	}
-
-	
-	public B allowStartIfComplete(boolean allowStartIfComplete) {
-		properties.allowStartIfComplete = allowStartIfComplete;
-		@SuppressWarnings("unchecked")
-		B result = (B) this;
-		return result;
-	}
-
-	protected String getName() {
-		return properties.name;
-	}
+    /**
+     * Create a new builder initialized with any properties in the parent. The parent is copied, so it can be re-used.
+     *
+     * @param parent a parent helper containing common step properties
+     */
+    protected StepBuilderHelper(StepBuilderHelper<?> parent) {
+        this.properties = new CommonStepProperties(parent.properties);
+    }
 
 
-	protected boolean isAllowStartIfComplete() {
-		return properties.allowStartIfComplete != null ? properties.allowStartIfComplete : false;
-	}
+    public B startLimit(int startLimit) {
+        properties.startLimit = startLimit;
+        @SuppressWarnings("unchecked")
+        B result = (B) this;
+        return result;
+    }
 
-	
-	public static class CommonStepProperties {
+    /**
+     * Registers objects using the annotation based listener configuration.
+     *
+     * @param listener the object that has a method configured with listener annotation
+     * @return this for fluent chaining
+     */
+    public B listener(Object listener) {
+        Set<Method> stepExecutionListenerMethods = new HashSet<Method>();
 
-		private int startLimit = Integer.MAX_VALUE;
 
-		private Boolean allowStartIfComplete;
+        @SuppressWarnings("unchecked")
+        B result = (B) this;
+        return result;
+    }
 
-		public CommonStepProperties() {
-		}
 
-		public CommonStepProperties(CommonStepProperties properties) {
-			this.name = properties.name;
-			this.startLimit = properties.startLimit;
-			this.allowStartIfComplete = properties.allowStartIfComplete;
-		}
+    public B allowStartIfComplete(boolean allowStartIfComplete) {
+        properties.allowStartIfComplete = allowStartIfComplete;
+        @SuppressWarnings("unchecked")
+        B result = (B) this;
+        return result;
+    }
 
-		public String getName() {
-			return name;
-		}
+    protected String getName() {
+        return properties.name;
+    }
 
-		public void setName(String name) {
-			this.name = name;
-		}
 
-		public Integer getStartLimit() {
-			return startLimit;
-		}
+    protected boolean isAllowStartIfComplete() {
+        return properties.allowStartIfComplete != null ? properties.allowStartIfComplete : false;
+    }
 
-		public void setStartLimit(Integer startLimit) {
-			this.startLimit = startLimit;
-		}
 
-		public Boolean getAllowStartIfComplete() {
-			return allowStartIfComplete;
-		}
+    public static class CommonStepProperties {
 
-		public void setAllowStartIfComplete(Boolean allowStartIfComplete) {
-			this.allowStartIfComplete = allowStartIfComplete;
-		}
+        private int startLimit = Integer.MAX_VALUE;
 
-		private String name;
+        private Boolean allowStartIfComplete;
 
-	}
+        public CommonStepProperties() {
+        }
+
+        public CommonStepProperties(CommonStepProperties properties) {
+            this.name = properties.name;
+            this.startLimit = properties.startLimit;
+            this.allowStartIfComplete = properties.allowStartIfComplete;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public Integer getStartLimit() {
+            return startLimit;
+        }
+
+        public void setStartLimit(Integer startLimit) {
+            this.startLimit = startLimit;
+        }
+
+        public Boolean getAllowStartIfComplete() {
+            return allowStartIfComplete;
+        }
+
+        public void setAllowStartIfComplete(Boolean allowStartIfComplete) {
+            this.allowStartIfComplete = allowStartIfComplete;
+        }
+
+        private String name;
+
+    }
 
 }

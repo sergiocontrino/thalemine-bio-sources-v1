@@ -18,30 +18,30 @@
 package org.intermine.bio.dataloader.job;
 
 /**
- *  
+ *
  * @author Dave Syer
- * 
+ *
  */
 public interface StepHandler {
 
-	/**
-	 * Handle a step and return the execution for it. Does not save the
-	 * {@link JobExecution}, but should manage the persistence of the
-	 * {@link StepExecution} if required (e.g. at least it needs to be added to
-	 * a repository before the step can be executed).
-	 * 
-	 * @param step a {@link Step}
-	 * @param jobExecution a {@link JobExecution}
-	 * @return an execution of the step
-	 * 
-	 * @throws JobInterruptedException if there is an interruption
-	 * @throws JobRestartException if there is a problem restarting a failed
-	 * step
-	 * @throws StartLimitExceededException if the step exceeds its start limit
-	 * 
-	 * @see Job#execute(JobExecution)
-	 * @see Step#execute(StepExecution)
-	 */
-	StepExecution handleStep(Step step, JobExecution jobExecution);
+    /**
+     * Handle a step and return the execution for it. Does not save the
+     * {@link JobExecution}, but should manage the persistence of the
+     * {@link StepExecution} if required (e.g. at least it needs to be added to
+     * a repository before the step can be executed).
+     *
+     * @param step a {@link Step}
+     * @param jobExecution a {@link JobExecution}
+     * @return an execution of the step
+     *
+     * @throws JobInterruptedException if there is an interruption
+     * @throws JobRestartException if there is a problem restarting a failed
+     * step
+     * @throws StartLimitExceededException if the step exceeds its start limit
+     *
+     * @see Job#execute(JobExecution)
+     * @see Step#execute(StepExecution)
+     */
+    StepExecution handleStep(Step step, JobExecution jobExecution);
 
 }

@@ -246,7 +246,7 @@ public abstract class AbstractJob implements Job, StepLocator
      *             failure
      */
     protected final StepExecution handleStep(Step step, JobExecution execution)
-             {
+    {
         return stepHandler.handleStep(step, execution);
 
     }
@@ -277,7 +277,7 @@ public abstract class AbstractJob implements Job, StepLocator
 
     private void updateStatus(JobExecution jobExecution, BatchStatus status) {
         jobExecution.setStatus(status);
-        }
+    }
 
     @Override
     public String toString() {

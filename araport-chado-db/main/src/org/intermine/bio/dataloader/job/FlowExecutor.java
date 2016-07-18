@@ -18,55 +18,55 @@ package org.intermine.bio.dataloader.job;
 /**
  * Context and execution strategy for {@link FlowJob} to allow it to delegate
  * its execution step by step.
- * 
+ *
  */
 public interface FlowExecutor {
 
-	/**
-	 * @param step a {@link Step} to execute
-	 * @return the exit status that drives the surrounding {@link Flow}
-	 * @throws StartLimitExceededException
-	 * @throws JobRestartException
-	 * @throws JobInterruptedException
-	 */
-	String executeStep(Step step);
-	/**
-	 * @return the current {@link JobExecution}
-	 */
-	JobExecution getJobExecution();
+    /**
+     * @param step a {@link Step} to execute
+     * @return the exit status that drives the surrounding {@link Flow}
+     * @throws StartLimitExceededException
+     * @throws JobRestartException
+     * @throws JobInterruptedException
+     */
+    String executeStep(Step step);
+    /**
+     * @return the current {@link JobExecution}
+     */
+    JobExecution getJobExecution();
 
-	/**
-	 * @return the latest {@link StepExecution} or null if there is none
-	 */
-	StepExecution getStepExecution();
+    /**
+     * @return the latest {@link StepExecution} or null if there is none
+     */
+    StepExecution getStepExecution();
 
-	/**
-	 * Chance to clean up resources at the end of a flow (whether it completed
-	 * successfully or not).
-	 * 
-	 * @param result the final {@link FlowExecution}
-	 */
-	void close(FlowExecution result);
+    /**
+     * Chance to clean up resources at the end of a flow (whether it completed
+     * successfully or not).
+     *
+     * @param result the final {@link FlowExecution}
+     */
+    void close(FlowExecution result);
 
-	/**
-	 * Handle any status changes that might be needed at the start of a state.
-	 */
-	void abandonStepExecution();
+    /**
+     * Handle any status changes that might be needed at the start of a state.
+     */
+    void abandonStepExecution();
 
-	/**
-	 * Handle any status changes that might be needed in the
-	 * {@link JobExecution}.
-	 */
-	void updateJobExecutionStatus(FlowExecutionStatus status);
+    /**
+     * Handle any status changes that might be needed in the
+     * {@link JobExecution}.
+     */
+    void updateJobExecutionStatus(FlowExecutionStatus status);
 
-	/**
-	 * @return true if the flow is at the beginning of a restart
-	 */
-	boolean isRestart();
+    /**
+     * @return true if the flow is at the beginning of a restart
+     */
+    boolean isRestart();
 
-	/**
-	 * @param code the label for the exit status when a flow or sub-flow ends
-	 */
-	void addExitStatus(String code);
+    /**
+     * @param code the label for the exit status when a flow or sub-flow ends
+     */
+    void addExitStatus(String code);
 
 }
