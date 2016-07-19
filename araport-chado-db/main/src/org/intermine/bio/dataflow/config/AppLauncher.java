@@ -93,25 +93,20 @@ import org.intermine.bio.dataloader.job.Step;
 import org.intermine.item.domain.database.DatabaseItemReader;
 import org.intermine.xml.full.Item;
 
-public class AppLauncher {
+public class AppLauncher
+{
 
-    protected static final Logger log = Logger.getLogger(AppLauncher.class);
+    protected static final Logger LOG = Logger.getLogger(AppLauncher.class);
 
     private static ChadoDBConverter service;
-
-    private final static String JOB_NAME = "Stock Loading Job";
+    private static final String JOB_NAME = "Stock Loading Job";
     private static SimpleJob job = new SimpleJob(JOB_NAME);
-
-    private final static SimpleJobLauncher jobLauncher = new SimpleJobLauncher();
-
-    private final static TaskExecutor taskExecutor = new SyncTaskExecutor();
-
+    private static final SimpleJobLauncher JOB_LAUNCHER = new SimpleJobLauncher();
+    private static final TaskExecutor TASK_EXECUTOR = new SyncTaskExecutor();
     private static List<Step> steps = new ArrayList<Step>();
-
-    private static class AppLauncherHolder {
-
+    private static class AppLauncherHolder
+    {
         public static final AppLauncher INSTANCE = new AppLauncher();
-
     }
 
     public static AppLauncher getInstance(ChadoDBConverter chadoDBConverter) {
@@ -120,242 +115,226 @@ public class AppLauncher {
     }
 
     public static void initialize(ChadoDBConverter chadoDBConverter) {
-
-        log.info("Initializing Launcher has started...");
-
+        LOG.info("Initializing Launcher has started...");
         service = chadoDBConverter;
         createSteps();
         setJob();
-
         DataFlowConfig.initialize();
-
-        log.info("Initialization has completed.");
-
+        LOG.info("Initialization has completed.");
     }
 
     private static void createSteps() {
-
-        Step dataSourceProcessor = new DataSourceItemProcessor(service).getPostProcessor("DataSource Processor", service,
-                taskExecutor);
+        Step dataSourceProcessor = new DataSourceItemProcessor(service).getPostProcessor(
+                "DataSource Processor", service, TASK_EXECUTOR);
 
         // CV Step Config
         CVItemProcessor processor1 = new CVItemProcessor(service);
         DatabaseItemReader<SourceCV> reader1 = new CVReader().getReader(service.getConnection());
         String stepName1 = "CV Loading Step";
-        FlowStep<SourceCV, Item> cvStep = new FlowStepBuilder<SourceCV, Item>().build(stepName1, reader1, processor1,
-                taskExecutor);
+        FlowStep<SourceCV, Item> cvStep = new FlowStepBuilder<SourceCV, Item>().build(
+                stepName1, reader1, processor1, TASK_EXECUTOR);
 
         // CV - CVTerm Collection
-
         CVTermProcessor processor2 = new CVTermProcessor(service);
-        DatabaseItemReader<SourceCVTerm> reader2 = new CVTermReader().getReader(service.getConnection());
+        DatabaseItemReader<SourceCVTerm> reader2 = new CVTermReader().getReader(
+                service.getConnection());
         String stepName2 = "CVTerm Loading Step";
-        Step cvTermPostprocessor = new CVTermPostprocessor(service).getPostProcessor("CVTerm PostProcessor", service,
-                taskExecutor);
-
-        FlowStep<SourceCVTerm, Item> cvTermStep = new FlowStepBuilder<SourceCVTerm, Item>().build(stepName2, reader2,
-                processor2, taskExecutor);
-
+        Step cvTermPostprocessor = new CVTermPostprocessor(service).getPostProcessor(
+                "CVTerm PostProcessor", service, TASK_EXECUTOR);
+        FlowStep<SourceCVTerm, Item> cvTermStep = new FlowStepBuilder<SourceCVTerm, Item>().build(
+                stepName2, reader2, processor2, TASK_EXECUTOR);
         cvTermStep.setStepPostProcessor(cvTermPostprocessor);
 
         // Strain Step Config
         StrainItemProcessor processor3 = new StrainItemProcessor(service);
-        DatabaseItemReader<SourceStrain> reader3 = new StrainReader().getReader(service.getConnection());
+        DatabaseItemReader<SourceStrain> reader3 = new StrainReader().getReader(
+                service.getConnection());
         String stepName3 = "Strain Loading Step";
-        FlowStep<SourceStrain, Item> strainStep = new FlowStepBuilder<SourceStrain, Item>().build(stepName3, reader3,
-                processor3, taskExecutor);
+        FlowStep<SourceStrain, Item> strainStep = new FlowStepBuilder<SourceStrain, Item>().build(
+                stepName3, reader3, processor3, TASK_EXECUTOR);
 
         // Stock Step Config
         StockItemProcessor processor4 = new StockItemProcessor(service);
-        DatabaseItemReader<SourceStock> reader4 = new StockReader().getStockReader(service.getConnection());
+        DatabaseItemReader<SourceStock> reader4 = new StockReader().getStockReader(
+                service.getConnection());
         String stepName4 = "Stock Loading Step";
-        Step stockPostprocessor = new StockItemPostprocessor(service).getPostProcessor("Stock PostProcessor", service,
-                taskExecutor);
-
-        FlowStep<SourceStock, Item> stockStep = new FlowStepBuilder<SourceStock, Item>().build(stepName4, reader4,
-                processor4, taskExecutor);
+        Step stockPostprocessor = new StockItemPostprocessor(service).getPostProcessor(
+                "Stock PostProcessor", service, TASK_EXECUTOR);
+        FlowStep<SourceStock, Item> stockStep = new FlowStepBuilder<SourceStock, Item>().build(
+                stepName4, reader4, processor4, TASK_EXECUTOR);
         stockStep.setStepPostProcessor(stockPostprocessor);
 
-        BackgroundAccessionStockItemProcessor processor5 = new BackgroundAccessionStockItemProcessor(service);
-        DatabaseItemReader<SourceBackgroundStrain> reader5 = new BackgroundAccessionReader().getReader(service
-                .getConnection());
+        //
+        BackgroundAccessionStockItemProcessor processor5 =
+                new BackgroundAccessionStockItemProcessor(service);
+        DatabaseItemReader<SourceBackgroundStrain> reader5 =
+                new BackgroundAccessionReader().getReader(service.getConnection());
         String stepName5 = "Background Accession Stock Loading Step";
-
-        Step backgroundAccessionPostProcessor = new BackgroundAccessionStockItemPostprocessor(service)
-                .getPostProcessor("Background Accession Stock PostProcessor", service, taskExecutor);
-
-        FlowStep<SourceBackgroundStrain, Item> bgAccessionStockStep = new FlowStepBuilder<SourceBackgroundStrain, Item>()
-                .build(stepName5, reader5, processor5, taskExecutor);
-
+        Step backgroundAccessionPostProcessor =
+                new BackgroundAccessionStockItemPostprocessor(service).getPostProcessor(
+                        "Background Accession Stock PostProcessor", service, TASK_EXECUTOR);
+        FlowStep<SourceBackgroundStrain, Item> bgAccessionStockStep =
+                new FlowStepBuilder<SourceBackgroundStrain, Item>().build(
+                        stepName5, reader5, processor5, TASK_EXECUTOR);
         bgAccessionStockStep.setStepPostProcessor(backgroundAccessionPostProcessor);
 
         // Allele Step
-
         AlleleItemProcessor processor6 = new AlleleItemProcessor(service);
-        DatabaseItemReader<SourceAllele> reader6 = new AlleleReader().getReader(service.getConnection());
+        DatabaseItemReader<SourceAllele> reader6 =
+                new AlleleReader().getReader(service.getConnection());
         String stepName6 = "Allele Loading Step";
 
-
-        FlowStep<SourceAllele, Item> alleleStep = new FlowStepBuilder<SourceAllele, Item>().build(stepName6, reader6,
-                processor6, taskExecutor);
+        FlowStep<SourceAllele, Item> alleleStep = new FlowStepBuilder<SourceAllele, Item>().build(
+                stepName6, reader6, processor6, TASK_EXECUTOR);
         // alleleStep.setStepPostProcessor(allelePostProcessor);
 
         // Genotype
         GenotypeItemProcessor processor7 = new GenotypeItemProcessor(service);
-        DatabaseItemReader<SourceGenotype> reader7 = new GenotypeReader().getReader(service.getConnection());
+        DatabaseItemReader<SourceGenotype> reader7 =
+                new GenotypeReader().getReader(service.getConnection());
         String stepName7 = "Genotype Loading Step";
-
-        FlowStep<SourceGenotype, Item> genotypeStep = new FlowStepBuilder<SourceGenotype, Item>().build(stepName7,
-                reader7, processor7, taskExecutor);
+        FlowStep<SourceGenotype, Item> genotypeStep =
+                new FlowStepBuilder<SourceGenotype, Item>().build(
+                        stepName7, reader7, processor7, TASK_EXECUTOR);
 
         // Genotype/Allele Collection
         GenotypeAlleleItemProcessor processor8 = new GenotypeAlleleItemProcessor(service);
-        DatabaseItemReader<SourceFeatureGenotype> reader8 = new GenotypeAlleleReader().getReader(service.getConnection());
+        DatabaseItemReader<SourceFeatureGenotype> reader8 =
+                new GenotypeAlleleReader().getReader(service.getConnection());
         String stepName8 = "Genotype/Allele Collection Loading Step";
-
         FlowStep<SourceFeatureGenotype, Item> genotypeAlleleCollectionStep =
                 new FlowStepBuilder<SourceFeatureGenotype, Item>()
-                .build(stepName8, reader8, processor8, taskExecutor);
-
-        Step alleleGenotypePostProcessor = new AlleleItemPostprocessor(service).getPostProcessor("Allele/Genotype PostProcessor",
-                service, taskExecutor);
+                .build(stepName8, reader8, processor8, TASK_EXECUTOR);
+        Step alleleGenotypePostProcessor = new AlleleItemPostprocessor(service).getPostProcessor(
+                "Allele/Genotype PostProcessor", service, TASK_EXECUTOR);
         genotypeAlleleCollectionStep.setStepPostProcessor(alleleGenotypePostProcessor);
 
         // Genotype/Stock Collection
-
         StockGenotypeItemProcessor processor9 = new StockGenotypeItemProcessor(service);
-        DatabaseItemReader<SourceStockGenotype> reader9 = new StockGenotypeReader().getReader(service.getConnection());
+        DatabaseItemReader<SourceStockGenotype> reader9 =
+                new StockGenotypeReader().getReader(service.getConnection());
         String stepName9 = "Stock/Genotype Collection Loading Step";
-
-        Step stockGenotypePostProcessor = new StockGenotypeItemPostprocessor(service).getPostProcessor("Stock/Genotype PostProcessor",
-                service, taskExecutor);
+        Step stockGenotypePostProcessor =
+                new StockGenotypeItemPostprocessor(service).getPostProcessor(
+                        "Stock/Genotype PostProcessor", service, TASK_EXECUTOR);
 
         FlowStep<SourceStockGenotype, Item> stockGenotypeCollectionStep =
                 new FlowStepBuilder<SourceStockGenotype, Item>()
-                .build(stepName9, reader9, processor9, taskExecutor);
-
+                .build(stepName9, reader9, processor9, TASK_EXECUTOR);
         stockGenotypeCollectionStep.setStepPostProcessor(stockGenotypePostProcessor);
 
         // Phenotype
         PhenotypeItemProcessor processor10 = new PhenotypeItemProcessor(service);
-        DatabaseItemReader<SourcePhenotype> reader10 = new PhenotypeReader().getReader(service.getConnection());
+        DatabaseItemReader<SourcePhenotype> reader10 =
+                new PhenotypeReader().getReader(service.getConnection());
         String stepName10 = "Phenotype Loading Step";
-
         FlowStep<SourcePhenotype, Item> phenotypeStep =
                 new FlowStepBuilder<SourcePhenotype, Item>()
-                .build(stepName10, reader10, processor10, taskExecutor);
-
+                .build(stepName10, reader10, processor10, TASK_EXECUTOR);
 
         // Phenotype/Genetic Context Collections
-
-        PhenotypeGeneticContextItemProcessor processor11 = new PhenotypeGeneticContextItemProcessor(service);
-        DatabaseItemReader<SourcePhenotypeGeneticContext> reader11 = new PhenotypeGeneticContextReader().getReader(service.getConnection());
+        PhenotypeGeneticContextItemProcessor processor11 =
+                new PhenotypeGeneticContextItemProcessor(service);
+        DatabaseItemReader<SourcePhenotypeGeneticContext> reader11 =
+                new PhenotypeGeneticContextReader().getReader(service.getConnection());
         String stepName11 = "Phenotype/Genetic Context Collection Loading Step";
-
-        Step phenotypeGeneticPostProcessor = new PhenotypeGeneticContextPostprocessor(service).getPostProcessor("Phenotype/Genetic Feature PostProcessor",
-                service, taskExecutor);
-
+        Step phenotypeGeneticPostProcessor =
+                new PhenotypeGeneticContextPostprocessor(service).getPostProcessor(
+                        "Phenotype/Genetic Feature PostProcessor", service, TASK_EXECUTOR);
         FlowStep<SourcePhenotypeGeneticContext, Item> phenotypeGeneticContextCollectionStep =
                 new FlowStepBuilder<SourcePhenotypeGeneticContext, Item>()
-                .build(stepName11, reader11, processor11, taskExecutor);
-
+                .build(stepName11, reader11, processor11, TASK_EXECUTOR);
         phenotypeGeneticContextCollectionStep.setStepPostProcessor(phenotypeGeneticPostProcessor);
 
+        //
         PublicationsItemProcessor processor12 = new PublicationsItemProcessor(service);
-        DatabaseItemReader<SourcePublication> reader12 = new PublicationReader().getReader(service.getConnection());
+        DatabaseItemReader<SourcePublication> reader12 =
+                new PublicationReader().getReader(service.getConnection());
         String stepName12 = "Publication Loading Step";
-
         FlowStep<SourcePublication, Item> publicationStep =
                 new FlowStepBuilder<SourcePublication, Item>()
-                .build(stepName12, reader12, processor12, taskExecutor);
+                .build(stepName12, reader12, processor12, TASK_EXECUTOR);
 
         // Publications && Features
-
-
-        PublicationsFeaturesItemProcessor processor14 = new PublicationsFeaturesItemProcessor(service);
-        DatabaseItemReader<SourcePublicationFeatures> reader14 = new PublicationFeaturesReader().getReader(service.getConnection());
+        PublicationsFeaturesItemProcessor processor14 =
+                new PublicationsFeaturesItemProcessor(service);
+        DatabaseItemReader<SourcePublicationFeatures> reader14 =
+                new PublicationFeaturesReader().getReader(service.getConnection());
         String stepName14 = "Publication/Features Loading Step";
-
-        Step publicationFeaturePostProcessor = new PublicationFeaturePostprocessor(service).getPostProcessor("Publication/Feature PostProcessor",
-                service, taskExecutor);
-
+        Step publicationFeaturePostProcessor =
+                new PublicationFeaturePostprocessor(service).getPostProcessor(
+                        "Publication/Feature PostProcessor", service, TASK_EXECUTOR);
         FlowStep<SourcePublicationFeatures, Item> publicationFeaturesStep =
                 new FlowStepBuilder<SourcePublicationFeatures, Item>()
-                .build(stepName14, reader14, processor14, taskExecutor);
-
+                .build(stepName14, reader14, processor14, TASK_EXECUTOR);
         publicationFeaturesStep.setStepPostProcessor(publicationFeaturePostProcessor);
+        Step dataSourcePostProcessor =
+                new DataSourceItemPostprocessor(service).getPostProcessor(
+                        "DataSource PostProcessor", service, TASK_EXECUTOR);
 
-        Step dataSourcePostProcessor = new DataSourceItemPostprocessor(service).getPostProcessor("DataSource PostProcessor", service,
-                taskExecutor);
-
-
-        Step dataSetPostProcessor = new DataSetItemPostprocessor(service).getPostProcessor("DataSet PostProcessor", service,
-                taskExecutor);
-
+        //
+        Step dataSetPostProcessor =
+                new DataSetItemPostprocessor(service).getPostProcessor(
+                        "DataSet PostProcessor", service, TASK_EXECUTOR);
         steps.add(dataSourceProcessor);
 
+        //
         StockSynonymItemProcessor processor15 = new StockSynonymItemProcessor(service);
-        DatabaseItemReader<SourceStockSynonym> reader15 = new StockSynonymReader().getReader(service.getConnection());
+        DatabaseItemReader<SourceStockSynonym> reader15 =
+                new StockSynonymReader().getReader(service.getConnection());
         String stepName15 = "Stock/Synonyms Loading Step";
-
         FlowStep<SourceStockSynonym, Item> stockSynonymsStep =
                 new FlowStepBuilder<SourceStockSynonym, Item>()
-                .build(stepName15, reader15, processor15, taskExecutor);
+                .build(stepName15, reader15, processor15, TASK_EXECUTOR);
 
-
+        //
         StockCenterItemProcessor processor16 = new StockCenterItemProcessor(service);
-        DatabaseItemReader<SourceStockCenter> reader16 = new StockCenterReader().getReader(service.getConnection());
+        DatabaseItemReader<SourceStockCenter> reader16 =
+                new StockCenterReader().getReader(service.getConnection());
         String stepName16 = "Stock Center Loading Step";
-
         FlowStep<SourceStockCenter, Item> stockCenterStep =
                 new FlowStepBuilder<SourceStockCenter, Item>()
-                .build(stepName16, reader16, processor16, taskExecutor);
+                .build(stepName16, reader16, processor16, TASK_EXECUTOR);
 
-
-
+        //
         StockAvailabilityItemProcessor processor18 = new StockAvailabilityItemProcessor(service);
-        DatabaseItemReader<SourceStockAvailability> reader18 = new StockAvailabilityReader().getReader(service.getConnection());
+        DatabaseItemReader<SourceStockAvailability> reader18 =
+                new StockAvailabilityReader().getReader(service.getConnection());
         String stepName18 = "Stock Availaibility Loading Step";
-
-
         FlowStep<SourceStockAvailability, Item> stockAvailabilityStep =
                 new FlowStepBuilder<SourceStockAvailability, Item>()
-                .build(stepName18, reader18, processor18, taskExecutor);
+                .build(stepName18, reader18, processor18, TASK_EXECUTOR);
 
-
+        //
         AlleleGeneZygosityItemProcessor processor19 = new AlleleGeneZygosityItemProcessor(service);
-        DatabaseItemReader<SourceFeatureRelationshipAnnotation> reader19 = new AlleleGeneZygosityReader().getReader(service.getConnection());
+        DatabaseItemReader<SourceFeatureRelationshipAnnotation> reader19 =
+                new AlleleGeneZygosityReader().getReader(service.getConnection());
         String stepName19 = "Allele/Gene ZygosityLoading Step";
-
         FlowStep<SourceFeatureRelationshipAnnotation, Item> alleleGeneZygosityStep =
                 new FlowStepBuilder<SourceFeatureRelationshipAnnotation, Item>()
-                .build(stepName19, reader19, processor19, taskExecutor);
+                .build(stepName19, reader19, processor19, TASK_EXECUTOR);
 
+        //
         GenotypeZygosityItemProcessor processor20 = new GenotypeZygosityItemProcessor(service);
-        DatabaseItemReader<SourceGenotypeZygosity> reader20 = new GenotypeZygosityReader().getReader(service.getConnection());
+        DatabaseItemReader<SourceGenotypeZygosity> reader20 =
+                new GenotypeZygosityReader().getReader(service.getConnection());
         String stepName20 = "Genotype ZygosityLoading Step";
-
         FlowStep<SourceGenotypeZygosity, Item> genotypeZygosityStep =
                 new FlowStepBuilder<SourceGenotypeZygosity, Item>()
-                .build(stepName20, reader20, processor20, taskExecutor);
-
-        //FlowStep<SourceFeatureRelationshipAnnotation, Item> alleleGeneZygosityStep =
-        //		new FlowStepBuilder<SourceFeatureRelationshipAnnotation, Item>()
-        //		.build(stepName19, reader19, processor19, taskExecutor);
+                .build(stepName20, reader20, processor20, TASK_EXECUTOR);
 
         //Phenotype Annotation
-
-        PhenotypeAnnotationItemProcessor processor21 = new PhenotypeAnnotationItemProcessor(service);
-        DatabaseItemReader<SourcePhenotypeAnnotation> reader21 = new PhenotypeAnnotationReader().getReader(service.getConnection());
+        PhenotypeAnnotationItemProcessor processor21 =
+                new PhenotypeAnnotationItemProcessor(service);
+        DatabaseItemReader<SourcePhenotypeAnnotation> reader21 =
+                new PhenotypeAnnotationReader().getReader(service.getConnection());
         String stepName21 = "Phenotype Annotation Loading Step";
-
-        Step phenotypeAnnotationPostProcessor = new PhenotypeAnnotationPostProcessor(service).getPostProcessor("Phenotype Annotation PostProcessor",
-                service, taskExecutor);
-
+        Step phenotypeAnnotationPostProcessor =
+                new PhenotypeAnnotationPostProcessor(service).getPostProcessor(
+                        "Phenotype Annotation PostProcessor", service, TASK_EXECUTOR);
         FlowStep<SourcePhenotypeAnnotation, Item> phenotypeAnnotationStep =
                 new FlowStepBuilder<SourcePhenotypeAnnotation, Item>()
-                .build(stepName21, reader21, processor21, taskExecutor);
-
+                .build(stepName21, reader21, processor21, TASK_EXECUTOR);
         phenotypeAnnotationStep.setStepPostProcessor(phenotypeAnnotationPostProcessor);
 
         steps.add(cvStep);
@@ -371,47 +350,34 @@ public class AppLauncher {
         steps.add(phenotypeGeneticContextCollectionStep);
         steps.add(publicationStep);
         steps.add(publicationFeaturesStep);
-
         //steps.add(dataSetPostProcessor);
-
         steps.add(stockSynonymsStep);
-
         steps.add(stockCenterStep);
-
         steps.add(stockAvailabilityStep);
-
         //steps.add(alleleGeneZygosityStep);
-
         steps.add(genotypeZygosityStep);
-
         steps.add(phenotypeAnnotationStep);
-
     }
 
     private static SimpleJob setJob() {
-
         job.setSteps(steps);
-
         return job;
     }
 
-    private static JobExecution createJobExecution(JobInstance jobInstance, JobParameters jobParameters) {
+    private static JobExecution createJobExecution(
+            JobInstance jobInstance, JobParameters jobParameters) {
 
         JobExecution jobExecution = new JobExecution(jobInstance, jobParameters);
         ExecutionContext executionContext = new ExecutionContext();
         jobExecution.setExecutionContext(executionContext);
         jobExecution.setLastUpdated(new Date(System.currentTimeMillis()));
-
         return jobExecution;
     }
 
     private static JobInstance createJobInstance(String jobName, JobParameters jobParameters) {
-
         Long jobId = IdGenerator.randLong();
-
         JobInstance jobInstance = new JobInstance(jobId, jobName);
         jobInstance.incrementVersion();
-
         return jobInstance;
     }
 
@@ -420,29 +386,19 @@ public class AppLauncher {
     }
 
     public static void run() {
-
         JobParameters jobParameters = createJobParameters();
-
-        log.info("Launching Loading Job...");
-
-        jobLauncher.run(job, jobParameters);
-
-        log.info("Loading Job has been completed.");
+        LOG.info("Launching Loading Job...");
+        JOB_LAUNCHER.run(job, jobParameters);
+        LOG.info("Loading Job has been completed.");
 
         Map<String, ItemHolder> items = CVService.getCVItemMap();
-
         for (Map.Entry<String, ItemHolder> item : items.entrySet()) {
-
             String cv = item.getKey();
             String cvItemId = item.getValue().getItem().getIdentifier();
-
             Item cvItem = item.getValue().getItem();
-            log.info("CV Key:" + cv + "; cvItemId:" + cvItemId + ";" + "cvItem = " + cvItem + ";"
+            LOG.debug("CV Key:" + cv + "; cvItemId:" + cvItemId + ";" + "cvItem = " + cvItem + ";"
                     + cvItem.getCollection("terms"));
-
         }
-
-        log.info("CV Map Item Size =" + items.size());
-
+        LOG.info("CV Map Item Size =" + items.size());
     }
 }
