@@ -1,7 +1,5 @@
 package org.intermine.bio.item.processor;
 
-import java.util.Map;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.apache.log4j.Logger;
@@ -9,16 +7,15 @@ import org.intermine.bio.chado.CVService;
 import org.intermine.bio.dataconversion.ChadoDBConverter;
 import org.intermine.bio.dataconversion.DataSourceProcessor;
 import org.intermine.bio.dataflow.config.DataFlowConfig;
+import org.intermine.bio.domain.source.SourceCV;
 import org.intermine.bio.item.ItemProcessor;
 import org.intermine.bio.item.util.ItemHolder;
 import org.intermine.objectstore.ObjectStoreException;
 import org.intermine.xml.full.Item;
-import org.intermine.bio.domain.source.*;
 
 public class CVItemProcessor extends DataSourceProcessor implements ItemProcessor<SourceCV, Item> {
 
-    protected static final Logger log = Logger.getLogger(CVItemProcessor.class);
-
+    protected static final Logger LOG = Logger.getLogger(CVItemProcessor.class);
     private String targetClassName;
 
     public CVItemProcessor(ChadoDBConverter chadoDBConverter) {
@@ -27,60 +24,47 @@ public class CVItemProcessor extends DataSourceProcessor implements ItemProcesso
 
     @Override
     public Item process(SourceCV item) throws Exception {
-
         return createItem(item);
-
     }
 
     private Item createItem(SourceCV source) throws ObjectStoreException {
+        LOG.debug("Creating Item has started. Source Object:" + source);
 
-        log.info("Creating Item has started. Source Object:" + source);
+        String cvName = source.getName();
+        String itemClassName = DataFlowConfig.getChadoCVMap().get(cvName).getTargetClassName();
+        String itemName = DataFlowConfig.getChadoCVMap().get(cvName).getTargetName();
+        String itemUniqueName = DataFlowConfig.getChadoCVMap().get(cvName).getTargetUniqueName();
 
-        String cv_name = source.getName();
-        String item_class_name = DataFlowConfig.getChadoCVMap().get(cv_name).getTargetClassName();
-        String item_name = DataFlowConfig.getChadoCVMap().get(cv_name).getTargetName();
-        String item_unique_name = DataFlowConfig.getChadoCVMap().get(cv_name).getTargetUniqueName();
-
-        log.info("Chado CV Name:" + cv_name + ";Target CV Class Name:" + item_class_name);
+        LOG.info("Chado CV Name: " + cvName + " --> Target Class: " + itemClassName);
 
         Item item = null;
-
         Exception exception = null;
 
         try {
-            if (!StringUtils.isBlank(item_class_name) && (!StringUtils.isBlank(cv_name))) {
-
-                log.info("Passed Validation Criteria. Creating Target Item...");
-
+            if (!StringUtils.isBlank(itemClassName) && (!StringUtils.isBlank(cvName))) {
                 String sourceString = source.getName();
                 String parsedSourceString = StringUtils.replace(sourceString , "_", " ");
 
                 parsedSourceString = WordUtils.capitalize(parsedSourceString);
 
-                item = super.getService().createItem(item_class_name);
-                item.setAttribute("name",item_name);
-                item.setAttribute("uniqueName", item_unique_name);
+                item = super.getService().createItem(itemClassName);
+                item.setAttribute("name", itemName);
+                item.setAttribute("uniqueName", itemUniqueName);
                 item.setAttribute("url", "https://www.arabidopsis.org/");
 
                 int itemId = super.getService().store(item);
-
                 ItemHolder itemHolder = new ItemHolder(item, itemId);
-
-                if (itemHolder!=null){
-                    CVService.addCVItem(cv_name, itemHolder);
+                if (itemHolder != null) {
+                    CVService.addCVItem(cvName, itemHolder);
                 }
-
-
             }
-
         } catch (Exception e) {
             exception = e;
         } finally {
-
             if (exception != null) {
-                log.error("Error occurred during item creation. Source Item:" + source);
+                LOG.debug("Error occurred during item creation. Source Item:" + source);
             } else {
-                log.info("Target Item has been created. Target Object:" + item);
+                LOG.info("Created item: " + item);
             }
         }
 

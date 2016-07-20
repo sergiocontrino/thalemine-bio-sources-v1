@@ -66,7 +66,7 @@ public class StockSynonymItemProcessor extends DataSourceProcessor
             }
 
             if (StringUtils.isBlank(source.getSynonymName())) {
-                exception = new Exception("Synonym Cannot Be Null");
+                exception = new Exception("synonymName cannot be null");
                 throw exception;
             }
 
@@ -105,7 +105,9 @@ public class StockSynonymItemProcessor extends DataSourceProcessor
         } finally {
 
             if (exception != null) {
-                LOG.error("Unable to store item for record " + source
+//                LOG.error("Unable to store item for record " + source
+//                        + " :" + exception.getMessage());
+                LOG.warn("Unable to store item for stockId " + source.getStockId()
                         + " :" + exception.getMessage());
             } else {
                 LOG.debug("Target Item has been created. Target Object:" + item);

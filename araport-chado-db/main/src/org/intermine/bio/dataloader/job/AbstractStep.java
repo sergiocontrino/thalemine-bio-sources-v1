@@ -115,10 +115,10 @@ public abstract class AbstractStep implements Step
         ExitStatus exitStatus = ExitStatus.EXECUTING;
 
         try {
-            LOG.info("Step has started " + getName() + ".");
-            LOG.info("Before Opening Reader");
+            LOG.info(getName() + " step starts.........");
+            LOG.debug("Before Opening Reader");
             open();
-            LOG.info("After Opening Reader");
+            LOG.debug("After Opening Reader");
 
             //execute
             try {
@@ -128,7 +128,6 @@ public abstract class AbstractStep implements Step
             }
 
             //postprocess
-
             try {
                 doPostProcess(stepExecution);
             } catch (Exception e) {
@@ -136,20 +135,19 @@ public abstract class AbstractStep implements Step
             }
 
             exitStatus = ExitStatus.COMPLETED.and(stepExecution.getExitStatus());
-
             // Need to upgrade here not set, in case the execution was stopped
             stepExecution.upgradeStatus(BatchStatus.COMPLETED);
 
-            LOG.info("Step has completed " + getName() + ".");
+            LOG.info(getName() + " step completed.");
             LOG.debug("Step execution success: id=" + stepExecution.getId());
         } catch (Throwable e) {
             stepExecution.upgradeStatus(determineBatchStatus(e));
             exitStatus = exitStatus.and(getDefaultExitStatusForFailure(e));
             stepExecution.addFailureException(e);
             if (stepExecution.getStatus() == BatchStatus.STOPPED) {
-                LOG.info(String.format("Encountered interruption executing step %s in job %s : %s",
-                        name, stepExecution.getJobExecution().getJobInstance().getJobName(),
-                        e.getMessage()));
+//               LOG.info(String.format("Encountered interruption executing step %s in job %s : %s",
+//                        name, stepExecution.getJobExecution().getJobInstance().getJobName(),
+//                        e.getMessage()));
                 if (LOG.isDebugEnabled()) {
                     LOG.debug("Full exception", e);
                 }
