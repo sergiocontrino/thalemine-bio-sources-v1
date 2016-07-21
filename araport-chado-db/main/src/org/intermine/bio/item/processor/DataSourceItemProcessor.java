@@ -109,8 +109,7 @@ public class DataSourceItemProcessor extends AbstractStep
             if (exception != null) {
                 LOG.error("Error storing item for datasource record:" + dataSourceName);
             } else {
-                LOG.info("Target Item has been created. DataSource:" + dataSourceItem);
-
+                LOG.info("Created DataSource item: " + dataSourceItem.getAttribute("name"));
                 itemHolder = new ItemHolder(dataSourceItem, itemId);
                 if (itemHolder != null && itemId != -1) {
                     DataSourceService.addDataSourceItem(dataSourceName, itemHolder);

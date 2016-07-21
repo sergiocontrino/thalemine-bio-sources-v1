@@ -138,7 +138,7 @@ public abstract class AbstractStep implements Step
             // Need to upgrade here not set, in case the execution was stopped
             stepExecution.upgradeStatus(BatchStatus.COMPLETED);
 
-            LOG.info(getName() + " step completed.");
+            LOG.info(".........." + getName() + " step completed.");
             LOG.debug("Step execution success: id=" + stepExecution.getId());
         } catch (Throwable e) {
             stepExecution.upgradeStatus(determineBatchStatus(e));

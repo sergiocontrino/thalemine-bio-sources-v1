@@ -64,7 +64,7 @@ public class CVItemProcessor extends DataSourceProcessor implements ItemProcesso
             if (exception != null) {
                 LOG.debug("Error occurred during item creation. Source Item:" + source);
             } else {
-                LOG.info("Created item: " + item);
+                LOG.info("Created item: " + item.getAttribute("name"));
             }
         }
 

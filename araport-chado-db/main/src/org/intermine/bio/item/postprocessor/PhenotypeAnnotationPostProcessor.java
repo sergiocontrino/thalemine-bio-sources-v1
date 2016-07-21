@@ -55,7 +55,6 @@ public class PhenotypeAnnotationPostProcessor extends AbstractStep {
     @Override
     protected void doPostProcess(StepExecution stepExecution) throws Exception {
         // TODO Auto-generated method stub
-
     }
 
     public void setTaskExecutor(TaskExecutor taskExecutor) {
@@ -194,10 +193,10 @@ public class PhenotypeAnnotationPostProcessor extends AbstractStep {
 
     private void createStockPhenotypeAnnotationCollection() {
         Map<String, Item> items = StockService.getPhenotypeAnnotationItemSet();
-        LOG.debug("Total Count of Stock/Phenotype Collections to Process:" + items.size());
+        LOG.info("Stock Collections to process:" + items.size());
         for (Map.Entry<String, Item> item : items.entrySet()) {
             String stock = item.getKey();
-            LOG.info("Processing Stock: " + stock);
+            LOG.debug("Processing Stock: " + stock);
             Exception exception = null;
             ItemHolder itemHolder = null;
             Item stockItem = null;
@@ -230,7 +229,7 @@ public class PhenotypeAnnotationPostProcessor extends AbstractStep {
                 }
 
                 LOG.debug("Collection Holder: " + stock);
-                LOG.debug("Total Count of Entities to Process:" + collectionItems.size());
+                LOG.debug("Stock items to process:" + collectionItems.size());
 
                 ReferenceList referenceList = new ReferenceList();
                 referenceList.setName("stockphenotypeAnnotations");
