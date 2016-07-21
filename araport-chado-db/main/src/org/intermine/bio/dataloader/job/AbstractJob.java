@@ -34,14 +34,11 @@ import org.intermine.bio.dataloader.util.ClassUtils;
 public abstract class AbstractJob implements Job, StepLocator
 {
 
-    protected static final Log logger = LogFactory.getLog(AbstractJob.class);
+    protected static final Log LOG = LogFactory.getLog(AbstractJob.class);
 
     private String name;
-
     private boolean restartable = true;
-
     private JobParametersIncrementer jobParametersIncrementer;
-
     private StepHandler stepHandler;
 
     /**
@@ -147,8 +144,7 @@ public abstract class AbstractJob implements Job, StepLocator
      *             to signal a fatal batch framework error (not a business or
      *             validation exception)
      */
-    abstract protected void doExecute(JobExecution execution)
-            throws JobExecutionException;
+    protected abstract void doExecute(JobExecution execution) throws JobExecutionException;
 
     /**
      * Run the specified job, handling all listener and repository calls, and
@@ -160,44 +156,36 @@ public abstract class AbstractJob implements Job, StepLocator
      */
     @Override
     public final void execute(JobExecution execution) {
-
-        logger.debug("Job execution starting: " + execution);
-
+        LOG.debug("Job execution starting: " + execution);
         try {
-
             if (execution.getStatus() != BatchStatus.STOPPING) {
-
                 execution.setStartTime(new Date());
                 updateStatus(execution, BatchStatus.STARTED);
-
                 try {
                     doExecute(execution);
-                    logger.debug("Job execution complete: " + execution);
+                    LOG.debug("Job execution complete: " + execution);
                 } catch (RepeatException e) {
                     throw e.getCause();
                 }
             } else {
-
                 // The job was already stopped before we even got this far. Deal
                 // with it in the same way as any other interruption.
                 execution.setStatus(BatchStatus.STOPPED);
                 execution.setExitStatus(ExitStatus.COMPLETED);
-                logger.debug("Job execution was stopped: " + execution);
-
+                LOG.debug("Job execution was stopped: " + execution);
             }
 
         } catch (JobInterruptedException e) {
-            logger.info("Encountered interruption executing job: "
-                    + e.getMessage());
-            if (logger.isDebugEnabled()) {
-                logger.debug("Full exception", e);
+            LOG.info("Encountered interruption executing job: " + e.getMessage());
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Full exception", e);
             }
             execution.setExitStatus(getDefaultExitStatusForFailure(e, execution));
             execution.setStatus(BatchStatus.max(BatchStatus.STOPPED, e.getStatus()));
             execution.addFailureException(e);
         } catch (Throwable t) {
-            logger.error("Encountered fatal error executing job", t);
-            logger.error("Cause:" + t.getCause());
+            LOG.error("Encountered fatal error executing job", t);
+            LOG.error("Cause:" + t.getCause());
             execution.setExitStatus(getDefaultExitStatusForFailure(t, execution));
             execution.setStatus(BatchStatus.FAILED);
             execution.addFailureException(t);
@@ -207,19 +195,15 @@ public abstract class AbstractJob implements Job, StepLocator
                         && execution.getStepExecutions().isEmpty()) {
                     ExitStatus exitStatus = execution.getExitStatus();
                     ExitStatus newExitStatus =
-                            ExitStatus.NOOP.addExitDescription("All steps already completed or no steps configured for this job.");
+                            ExitStatus.NOOP.addExitDescription("Nothing to do: "
+                                    + "all steps already completed or no steps configured.");
                     execution.setExitStatus(exitStatus.and(newExitStatus));
                 }
-
                 execution.setEndTime(new Date());
-
-
             } finally {
-                logger.info("Job Completed");
+                LOG.info("Job Completed");
             }
-
         }
-
     }
 
     /**

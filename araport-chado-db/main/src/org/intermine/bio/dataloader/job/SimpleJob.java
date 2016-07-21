@@ -34,129 +34,129 @@ import org.slf4j.LoggerFactory;
  * list of steps.  Any {@link Step} that fails will fail the job.  The job is
  * considered complete when all steps have been executed.
  *
- * 
+ *
  */
 public class SimpleJob extends AbstractJob {
 
-	private final static Logger log = LoggerFactory
-			.getLogger(SimpleJob.class);
-	
-	private List<Step> steps = new ArrayList<Step>();
+    private final static Logger log = LoggerFactory
+            .getLogger(SimpleJob.class);
 
-	/**
-	 * Default constructor for job with null name
-	 */
-	public SimpleJob() {
-		this(null);
-	}
+    private List<Step> steps = new ArrayList<Step>();
 
-	/**
-	 * @param name
-	 */
-	public SimpleJob(String name) {
-		super(name);
-	}
+    /**
+     * Default constructor for job with null name
+     */
+    public SimpleJob() {
+        this(null);
+    }
 
-	/**
-	 * Public setter for the steps in this job. Overrides any calls to
-	 * {@link #addStep(Step)}.
-	 *
-	 * @param steps the steps to execute
-	 */
-	public void setSteps(List<Step> steps) {
-		this.steps.clear();
-		this.steps.addAll(steps);
-	}
+    /**
+     * @param name
+     */
+    public SimpleJob(String name) {
+        super(name);
+    }
 
-	/**
-	 * Convenience method for clients to inspect the steps for this job.
-	 *
-	 * @return the step names for this job
-	 */
-	@Override
-	public Collection<String> getStepNames() {
-		List<String> names = new ArrayList<String>();
-		for (Step step : steps) {
-			names.add(step.getName());
+    /**
+     * Public setter for the steps in this job. Overrides any calls to
+     * {@link #addStep(Step)}.
+     *
+     * @param steps the steps to execute
+     */
+    public void setSteps(List<Step> steps) {
+        this.steps.clear();
+        this.steps.addAll(steps);
+    }
 
-			if(step instanceof StepLocator) {
-				names.addAll(((StepLocator)step).getStepNames());
-			}
-		}
-		return names;
-	}
+    /**
+     * Convenience method for clients to inspect the steps for this job.
+     *
+     * @return the step names for this job
+     */
+    @Override
+    public Collection<String> getStepNames() {
+        List<String> names = new ArrayList<String>();
+        for (Step step : steps) {
+            names.add(step.getName());
 
-	/**
-	 * Convenience method for adding a single step to the job.
-	 *
-	 * @param step a {@link Step} to add
-	 */
-	public void addStep(Step step) {
-		this.steps.add(step);
-	}
+            if(step instanceof StepLocator) {
+                names.addAll(((StepLocator)step).getStepNames());
+            }
+        }
+        return names;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * org.springframework.batch.core.job.AbstractJob#getStep(java.lang.String)
-	 */
-	@Override
-	public Step getStep(String stepName) {
-		for (Step step : this.steps) {
-			if (step.getName().equals(stepName)) {
-				return step;
-			} else if(step instanceof StepLocator) {
-				Step result = ((StepLocator)step).getStep(stepName);
-				if(result != null) {
-					return result;
-				}
-			}
-		}
-		return null;
-	}
+    /**
+     * Convenience method for adding a single step to the job.
+     *
+     * @param step a {@link Step} to add
+     */
+    public void addStep(Step step) {
+        this.steps.add(step);
+    }
 
-	/**
-	 * Handler of steps sequentially as provided, checking each one for success
-	 * before moving to the next. Returns the last {@link StepExecution}
-	 * successfully processed if it exists, and null if none were processed.
-	 *
-	 * @param execution the current {@link JobExecution}
-	 * @throws JobInterruptedException 
-	 *
-	 * @see AbstractJob#handleStep(Step, JobExecution)
-	 */
-	@Override
-	protected void doExecute(JobExecution execution) throws JobInterruptedException 
-	 {
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * org.springframework.batch.core.job.AbstractJob#getStep(java.lang.String)
+     */
+    @Override
+    public Step getStep(String stepName) {
+        for (Step step : this.steps) {
+            if (step.getName().equals(stepName)) {
+                return step;
+            } else if(step instanceof StepLocator) {
+                Step result = ((StepLocator)step).getStep(stepName);
+                if(result != null) {
+                    return result;
+                }
+            }
+        }
+        return null;
+    }
 
-		StepExecution stepExecution = null;
-		for (Step step : steps) {
-			
-			stepExecution = new StepExecution(step.getName());
-			step.execute(stepExecution);
-			stepExecution.setStatus(BatchStatus.COMPLETED);
-					
-			log.info("StepExecution Status " + stepExecution.getStatus());
-			
-			//stepExecution = handleStep(step, execution);
-			//if (stepExecution.getStatus() != BatchStatus.COMPLETED) {
-				//
-				// Terminate the job if a step fails
-				//
-			//	break;
-			//}
-		}
+    /**
+     * Handler of steps sequentially as provided, checking each one for success
+     * before moving to the next. Returns the last {@link StepExecution}
+     * successfully processed if it exists, and null if none were processed.
+     *
+     * @param execution the current {@link JobExecution}
+     * @throws JobInterruptedException
+     *
+     * @see AbstractJob#handleStep(Step, JobExecution)
+     */
+    @Override
+    protected void doExecute(JobExecution execution) throws JobInterruptedException
+     {
 
-		//
-		// Update the job status to be the same as the last step
-		//
-		if (stepExecution != null) {
-			logger.debug("Upgrading JobExecution status: " + stepExecution);
-			execution.upgradeStatus(stepExecution.getStatus());
-			execution.setExitStatus(stepExecution.getExitStatus());
-		}
-	}
+        StepExecution stepExecution = null;
+        for (Step step : steps) {
 
-	
+            stepExecution = new StepExecution(step.getName());
+            step.execute(stepExecution);
+            stepExecution.setStatus(BatchStatus.COMPLETED);
+
+            log.info("StepExecution Status " + stepExecution.getStatus());
+
+            //stepExecution = handleStep(step, execution);
+            //if (stepExecution.getStatus() != BatchStatus.COMPLETED) {
+                //
+                // Terminate the job if a step fails
+                //
+            //	break;
+            //}
+        }
+
+        //
+        // Update the job status to be the same as the last step
+        //
+        if (stepExecution != null) {
+            LOG.debug("Upgrading JobExecution status: " + stepExecution);
+            execution.upgradeStatus(stepExecution.getStatus());
+            execution.setExitStatus(stepExecution.getExitStatus());
+        }
+    }
+
+
 }

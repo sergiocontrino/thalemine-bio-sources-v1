@@ -75,7 +75,7 @@ public class PublicationFeaturePostprocessor extends AbstractStep {
             List<Item> collectionItems = new ArrayList<Item>(collection);
             ItemHolder itemHolder = PublicationService.getPublicationMap().get(publication);
             LOG.debug("Collection Holder: " + publication);
-            LOG.info("Publication items to process:" + collectionItems.size());
+            LOG.debug("Publication items to process:" + collectionItems.size());
 
             /*
             for (Item member : collectionItems) {
