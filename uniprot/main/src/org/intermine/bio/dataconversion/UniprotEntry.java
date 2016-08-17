@@ -825,12 +825,13 @@ public class UniprotEntry
      * @param identifier "gene designation" for this gene from the XML.
      */
     public void addGeneDesignation(String identifier) {
-        if (dbref != null) {
+        if (dbref != null && geneDesignationToDbref.get(identifier) == null) {
             geneDesignationToDbref.put(identifier, dbref.type);
         } else {
-            LOG.debug("Could not set 'gene designation' for dbref:" + dbref.value);
+            LOG.info("Could not set 'gene designation' for dbref " + dbref.value
+                    + " (" + dbref.type + "|" + identifier + " " + primaryAccession + " "
+                    + primaryIdentifier + ")");
         }
-
     }
 
     /**
