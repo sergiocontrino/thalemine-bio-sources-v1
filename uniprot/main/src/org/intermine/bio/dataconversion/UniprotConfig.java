@@ -32,7 +32,6 @@ public class UniprotConfig
     private List<String> featureTypes = new ArrayList<String>();
     private List<String> xrefs = new ArrayList<String>();
     private Map<String, ConfigEntry> entries = new HashMap<String, ConfigEntry>();
-    private String mrnaDesignation = "mrna designation";
     private Map<String, String> strains = new HashMap<String, String>();
 
     /**
@@ -117,8 +116,6 @@ public class UniprotConfig
                 configEntry.setUniqueIdentifier(value);
             } else if ("gene-designation".equals(attributes[1])) {
                 configEntry.setGeneDesignation(value);
-            } else if ("mrna-designation".equals(attributes[1])) {
-                mrnaDesignation = value;
             } else if ("strain".equals(attributes[1])) {
                 configEntry.setStrain(value);
                 strains.put(value, taxonId);
@@ -178,10 +175,6 @@ public class UniprotConfig
         return configEntry.getIdentifierValue(identifier);
     }
 
-    public void setMRNADesignation(String mrnaDesignation) {
-        this.mrnaDesignation = mrnaDesignation;
-    }
-
     /*
      * A string value, e.g. "gene ID" or "gene designation"
      * @param taxonId organism for this gene
@@ -193,10 +186,6 @@ public class UniprotConfig
             return null;
         }
         return configEntry.getGeneDesignation();
-    }
-
-    public String getMRNADesignation() {
-        return mrnaDesignation;
     }
 
     /**
