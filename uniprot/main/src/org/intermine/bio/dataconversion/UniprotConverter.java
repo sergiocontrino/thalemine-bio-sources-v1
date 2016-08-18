@@ -764,7 +764,7 @@ public class UniprotConverter extends BioDirectoryConverter
                     if (pubRefId != null) {
                         pubRefIds.add(pubRefId);
                     } else {
-                        LOG.error("bad evidence code:" + code + " for "
+                        LOG.debug("bad evidence code:" + code + " for "
                                 + uniprotEntry.getPrimaryAccession());
                     }
                 }
@@ -1084,8 +1084,8 @@ public class UniprotConverter extends BioDirectoryConverter
             String taxId = uniprotEntry.getTaxonId();
 
             // which part of XML file to get values (eg. FlyBase, ORF, etc)
-            //String method = getGeneConfigMethod(taxId, identifierField);
-            String method = "gene-designation";
+            String method = getGeneConfigMethod(taxId, identifierField);
+            //String method = "gene-designation";
             String value = getGeneConfigValue(taxId, identifierField);
             Set<String> geneIdentifiers = new HashSet<String>();
             if ("name".equals(method)) {
