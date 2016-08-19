@@ -189,7 +189,7 @@ public class Protein2iprConverter extends BioFileConverter
         } else if (dbId.startsWith("PTHR")) {
             dbName = "PANTHER";
         } else if (dbId.startsWith("G3DSA")) {
-            dbName = "Gene3D";
+            dbName = "CATH-Gene3D";
         } else if (dbId.startsWith("TIGR")) {
             dbName = "TIGRFAMs";
         } else if (dbId.startsWith("PD")) {
@@ -198,6 +198,8 @@ public class Protein2iprConverter extends BioFileConverter
             dbName = "PIRSF";
         } else if (dbId.startsWith("MF_")) {
             dbName = "HAMAP";
+        } else if (dbId.startsWith("cd")) {
+            dbName = "CDD";
         } else {
             throw new RuntimeException("Unknown DB found. ID: " + dbId);
         }
