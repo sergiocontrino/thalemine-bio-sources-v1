@@ -1085,7 +1085,6 @@ public class UniprotConverter extends BioDirectoryConverter
 
             // which part of XML file to get values (eg. FlyBase, ORF, etc)
             String method = getGeneConfigMethod(taxId, identifierField);
-            //String method = "gene-designation";
             String value = getGeneConfigValue(taxId, identifierField);
             Set<String> geneIdentifiers = new HashSet<String>();
             if ("name".equals(method)) {

@@ -791,16 +791,6 @@ public class UniprotEntry
      * this is especially important when multiple identifiers are assigned, as in the case of yeast.
      * @param identifier "gene designation" for this gene from the XML.
      */
-//    public void addGeneDesignationOr(String identifier) {
-//        if (dbref != null && geneDesignationToDbref.get(identifier) == null) {
-//            geneDesignationToDbref.put(identifier, dbref.type);
-//        } else {
-//            LOG.info("Could not set 'gene designation' for dbref " + dbref.value
-//                    + " (" + dbref.type + "|" + identifier + " " + primaryAccession + " "
-//                    + primaryIdentifier + ")");
-//        }
-//    }
-
     public void addGeneDesignation(String identifier) {
         if (dbref == null) {
             LOG.warn("Could not set 'gene designation' for " + identifier + ": NULL dbref.");
@@ -815,9 +805,6 @@ public class UniprotEntry
             geneDesignationToDbref.put(identifier, dbref.type);
         }
     }
-
-
-
 
     /**
      *  <dbReference type="Ensembl" key="23" id="FBtr0082909">
