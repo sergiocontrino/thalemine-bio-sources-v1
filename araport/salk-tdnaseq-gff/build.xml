@@ -1,5 +1,5 @@
 <project name="salk-tdnaseq-gff" default="default" basedir=".">
   <description>build, test, package salk-tdnaseq-gff</description>
   
-  <import file="../../../imbuild/source.xml"/>
+  <import file="../../../../imbuild/source.xml"/>
 </project>
