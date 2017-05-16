@@ -1,7 +1,7 @@
 package org.intermine.bio.dataconversion;
 
 /*
- * Copyright (C) 2002-2015 FlyMine
+ * Copyright (C) 2002-2017 Araport
  *
  * This code may be freely distributed and modified under the
  * terms of the GNU Lesser General Public Licence.  This should
@@ -26,20 +26,20 @@ import org.intermine.metadata.StringUtil;
 import org.intermine.xml.full.Item;
 
 /**
- * A converter/retriever for the AipGff dataset via GFF files.
+ * A converter/retriever for the AraportGff dataset via GFF files.
  */
 
-public class AipGffGFF3RecordHandler extends GFF3RecordHandler
+public class AraportGffGFF3RecordHandler extends GFF3RecordHandler
 {
 
-    //private static final Logger LOG = Logger.getLogger(AipGffGFF3RecordHandler.class);
+    //private static final Logger LOG = Logger.getLogger(AraportGffGFF3RecordHandler.class);
     private final Map<String, Item> pubmedIdMap = new HashMap<String, Item>();
     private final Map<String, Item> protIdMap = new HashMap<String, Item>();
     /**
-     * Create a new AipGffGFF3RecordHandler for the given data model.
+     * Create a new AraportGffGFF3RecordHandler for the given data model.
      * @param model the model for which items will be created
      */
-    public AipGffGFF3RecordHandler (Model model) {
+    public AraportGffGFF3RecordHandler (Model model) {
         super(model);
         refsAndCollections.put("MRNA", "gene");
         refsAndCollections.put("Exon", "transcripts");

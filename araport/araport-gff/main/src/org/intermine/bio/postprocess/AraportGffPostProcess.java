@@ -43,13 +43,13 @@ import org.intermine.objectstore.query.SimpleConstraint;
 import org.intermine.objectstore.query.SubqueryConstraint;
 import org.intermine.postprocess.PostProcessor;
 
-public class AraportGFFPostProcess extends PostProcessor
+public class AraportGffPostProcess extends PostProcessor
 {
 
-    private static final Logger LOG = Logger.getLogger(AraportGFFPostProcess.class);
+    private static final Logger LOG = Logger.getLogger(AraportGffPostProcess.class);
     protected ObjectStore os;
 
-    public AraportGFFPostProcess(ObjectStoreWriter osw) {
+    public AraportGffPostProcess(ObjectStoreWriter osw) {
         super(osw);
         this.os = osw.getObjectStore();
     }
