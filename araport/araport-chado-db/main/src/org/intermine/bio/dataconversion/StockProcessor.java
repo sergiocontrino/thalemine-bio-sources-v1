@@ -48,7 +48,6 @@ import org.intermine.item.domain.database.UnexpectedInputException;
 import org.intermine.objectstore.ObjectStoreException;
 import org.intermine.xml.full.Item;
 import org.intermine.xml.full.ReferenceList;
-import org.postgresql.jdbc4.Jdbc4ResultSet;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -61,7 +60,7 @@ import org.apache.commons.lang.time.StopWatch;
 
 /**
  * A Stock Processor DataSet Processor for the chado stock module.
- * 
+ *
  * @author Irina Belyaeva
  */
 public class StockProcessor extends ChadoProcessor {
@@ -75,7 +74,7 @@ public class StockProcessor extends ChadoProcessor {
 
 	/**
 	 * Create a new ChadoProcessor
-	 * 
+	 *
 	 * @param chadoDBConverter
 	 *            the Parent ChadoDBConverter
 	 */
@@ -93,7 +92,7 @@ public class StockProcessor extends ChadoProcessor {
 
 	/**
 	 * Process the stocks and genotypes tables in a chado database
-	 * 
+	 *
 	 * @param connection
 	 * @throws ExecutionException
 	 * @throws InterruptedException
@@ -177,10 +176,10 @@ public class StockProcessor extends ChadoProcessor {
 		StockItemProcessor processor = new StockItemProcessor(chadoDBConverter);
 
 		DatabaseItemReader<SourceStock> reader1 = new StockReader().getStockReader(connection);
-		
+
 		FlowStep<SourceStock, Item> flowStep = new FlowStepBuilder<SourceStock, Item>().build("Test Step", reader1, processor,
 				taskExecutor);
-		
+
 		try {
 			log.info("Running Job");
 			testJobLauncher(flowStep);
@@ -285,7 +284,7 @@ public class StockProcessor extends ChadoProcessor {
 	/**
 	 * Return some SQL that can be included in the WHERE part of query that
 	 * restricts features by organism. "organism_id" must be selected.
-	 * 
+	 *
 	 * @return the SQL
 	 */
 	protected String getOrganismConstraint() {
@@ -310,7 +309,7 @@ public class StockProcessor extends ChadoProcessor {
 
 	private void testJobLauncher(Step step) throws Exception {
 
-		
+
 		SimpleJobLauncher jobLauncher = new SimpleJobLauncher();
 
 		SimpleJob job = new SimpleJob("job");
