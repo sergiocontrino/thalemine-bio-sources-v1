@@ -24,10 +24,10 @@ import org.intermine.model.bio.SequenceFeature;
 import org.intermine.objectstore.ObjectStoreException;
 
 /**
- * Code for loading fasta for thalemine, setting feature attribute from the FASTA header.
+ * Code for loading fasta for ThaLemine, setting feature attribute from the FASTA header.
  * @author Kim Rutherford
  */
-public class AIPFeatureFastaLoaderTask extends FastaLoaderTask
+public class AraportFeatureFastaLoaderTask extends FastaLoaderTask
 {
     private Map<String, Chromosome> chrMap = new HashMap<String, Chromosome>();
 

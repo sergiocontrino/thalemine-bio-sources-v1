@@ -3,10 +3,10 @@
   and deals with model objects (and therefore the "main" sub-project depends on
   the production model).
 -->
-<project name="fasta" default="default" basedir=".">
-  <description>build, test, package fasta</description>
+<project name="araport-fasta" default="default" basedir=".">
+  <description>build, test, package araport-fasta</description>
 
-  <import file="../../../imbuild/source.xml"/>
+  <import file="../../../../imbuild/source.xml"/>
 
   <!-- no retrieve -->
   <target name="retrieve"/>
@@ -41,6 +41,7 @@
                 dataSetTitle="${fasta.dataSetTitle}"
                 dataSourceName="${fasta.dataSourceName}"
                 sequenceType="${fasta.sequenceType}"
+                skipIfProteinLoaded="${fasta.skipIfProteinLoaded}"
                 fastaTaxonId="${fasta.taxonId}">
       <fileset dir="${src.data.dir}" includes="${fasta.includes}"/>
     </read-fasta>

@@ -25,11 +25,11 @@ import org.intermine.util.DynamicUtil;
 
 
 /**
- * A fasta loader that understand the headers of AIP fasta CDS fasta files and can make the
+ * A fasta loader that understand the headers of Araport CDS FASTA files and can make the
  * appropriate extra objects and references.
  * @author Kim Rutherford
  */
-public class AIPCDSFastaLoaderTask extends AIPFeatureFastaLoaderTask
+public class AraportCDSFastaLoaderTask extends AraportFeatureFastaLoaderTask
 {
    /**
      * {@inheritDoc}
@@ -50,7 +50,7 @@ public class AIPCDSFastaLoaderTask extends AIPFeatureFastaLoaderTask
                 model.getClassDescriptorByName("CDS").getType();
             if (!DynamicUtil.isInstance(bioEntity, cdsCls)) {
                 throw new RuntimeException("the InterMineObject passed to "
-                        + "AIPCDSFastaLoaderTask.extraProcessing() is not a "
+                        + "AraportCDSFastaLoaderTask.extraProcessing() is not a "
                         + "CDS: " + bioEntity);
             }
             InterMineObject mrna = getMRNA(mrnaIdentifier, organism, model);

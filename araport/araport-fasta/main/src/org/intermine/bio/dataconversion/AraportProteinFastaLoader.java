@@ -29,11 +29,11 @@ import org.intermine.objectstore.ObjectStoreException;
 import org.intermine.util.DynamicUtil;
 
 /**
- * A fasta loader that understand the headers of AIP fasta Protein fasta files and can make the
+ * A fasta loader that understand the headers of Araport Protein FASTA files and can make the
  * appropriate extra objects and references.
  * @author Kim Rutherford
  */
-public class AIPProteinFastaLoaderTask extends AIPFeatureFastaLoaderTask
+public class AraportProteinFastaLoaderTask extends AraportFeatureFastaLoaderTask
 {
     private Map<String, InterMineObject> geneIdO = new HashMap<String, InterMineObject>();
 
@@ -56,7 +56,7 @@ public class AIPProteinFastaLoaderTask extends AIPFeatureFastaLoaderTask
                     model.getClassDescriptorByName("Protein").getType();
             if (!DynamicUtil.isInstance(bioEntity, protCls)) {
                 throw new RuntimeException("the InterMineObject passed to "
-                        + "AIPProteinFastaLoaderTask.extraProcessing() is not a "
+                        + "AraportProteinFastaLoaderTask.extraProcessing() is not a "
                         + "Protein: " + bioEntity);
             }
             InterMineObject mrna = getMRNA(mrnaIdentifier, organism, model);
