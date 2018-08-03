@@ -1,0 +1,17 @@
+rootProject.name = 'bio-sources'
+include ':bio-source-araport'
+project(':bio-source-araport').projectDir = new File(settingsDir, './araport')
+include ':bio-source-ensembl'
+project(':bio-source-ensembl').projectDir = new File(settingsDir, './ensembl')
+include ':bio-source-generif'
+project(':bio-source-generif').projectDir = new File(settingsDir, './generif')
+include ':bio-source-gtex'
+project(':bio-source-gtex').projectDir = new File(settingsDir, './gtex')
+include ':bio-source-identifiers'
+project(':bio-source-identifiers').projectDir = new File(settingsDir, './identifiers')
+include ':bio-source-po'
+project(':bio-source-po').projectDir = new File(settingsDir, './po')
+include ':bio-source-po-annotation'
+project(':bio-source-po-annotation').projectDir = new File(settingsDir, './po-annotation')
+include ':bio-source-rnaseq-expression'
+project(':bio-source-rnaseq-expression').projectDir = new File(settingsDir, './rnaseq-expression')
